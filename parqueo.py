@@ -74,3 +74,38 @@ class ListaRegistrados:
             res.append(f"[{actual.vehiculo.placa}: {actual.vehiculo.propietario}]")
             actual = actual.siguiente
         return " -> ".join(res) + " -> None"
+
+
+# =====================================================================
+# 4. ARBOL N-ARIO - Clasificacion por Tipo de Vehiculo
+# =====================================================================
+class NodoArbol:
+    def __init__(self, nombre):
+        self.nombre = nombre
+        self.hijos = []
+        self.vehiculos = []
+
+    def clasificar(self, tipo, placa):
+        if self.nombre.lower() == tipo.lower():
+            self.vehiculos.append(placa.upper())
+            return True
+        for hijo in self.hijos:
+            if hijo.clasificar(tipo, placa): return True
+        return False
+
+    def remover(self, placa):
+        if placa.upper() in self.vehiculos:
+            self.vehiculos.remove(placa.upper())
+            return True
+        for hijo in self.hijos:
+            if hijo.remover(placa): return True
+        return False
+
+    # RECURSIVIDAD para dibujar las ramas de la jerarquia
+    def obtener_diagrama(self, nivel=0):
+        espacios = "   " * nivel
+        lista_v = f" Ocupantes: {self.vehiculos}" if self.vehiculos else ""
+        resultado = f"{espacios}└── {self.nombre}{lista_v}\n"
+        for hijo in self.hijos:
+            resultado += hijo.obtener_diagrama(nivel + 1)
+        return resultado
